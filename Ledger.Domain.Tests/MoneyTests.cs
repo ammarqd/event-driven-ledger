@@ -19,4 +19,19 @@ public class MoneyTests
     {
         Assert.Throws<ArgumentException>(() => new Money(100, "GB"));
     }
+
+    [Fact]
+    public void Add_ZeroPlusAmount_ReturnsAmount()
+    {
+        var result = Money.Zero("GBP") + new Money(500, "GBP");
+
+        Assert.Equal(new Money(500, "GBP"), result);
+    }
+
+    [Fact]
+    public void Add_DifferentCurrencies_Throws()
+    {
+        Assert.Throws<InvalidOperationException>(
+            () => new Money(500, "GBP") + new Money(500, "USD"));
+    }
 }
