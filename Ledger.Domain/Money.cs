@@ -21,6 +21,6 @@ public sealed record Money
         if (a.Currency != b.Currency)
             throw new InvalidOperationException("Cannot add different currencies.");
 
-        return new Money(a.MinorUnits + b.MinorUnits, a.Currency);
+        return new Money(checked(a.MinorUnits + b.MinorUnits), a.Currency);
     }
 }

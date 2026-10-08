@@ -34,4 +34,11 @@ public class MoneyTests
         Assert.Throws<InvalidOperationException>(
             () => new Money(500, "GBP") + new Money(500, "USD"));
     }
+
+    [Fact]
+    public void Add_Overflow_Throws()
+    {
+        Assert.Throws<OverflowException>(
+            () => new Money(long.MaxValue, "GBP") + new Money(1, "GBP"));
+    }
 }
