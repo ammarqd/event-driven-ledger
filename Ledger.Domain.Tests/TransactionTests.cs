@@ -7,7 +7,7 @@ public class TransactionTests
     [Fact]
     public void SingleEntry_Throws()
     {
-        var entries = new List<Entry> { new(Guid.NewGuid(), new Money(0, "GBP")) };
+        Entry[] entries = [new(Guid.NewGuid(), new Money(0, "GBP"))];
 
         Assert.Throws<ArgumentException>(
             () => new Transaction(Guid.NewGuid(), DateTimeOffset.UtcNow, entries));
@@ -16,11 +16,11 @@ public class TransactionTests
     [Fact]
     public void BalancedEntries_Succeeds()
     {
-        var entries = new[]
-        {
-            new Entry(Guid.NewGuid(), new Money(-1000, "GBP")),
-            new Entry(Guid.NewGuid(), new Money(1000, "GBP")),
-        };
+        Entry[] entries =
+        [
+            new(Guid.NewGuid(), new Money(-1000, "GBP")),
+            new(Guid.NewGuid(), new Money(1000, "GBP")),
+        ];
 
         var tx = new Transaction(Guid.NewGuid(), DateTimeOffset.UtcNow, entries);
 
@@ -30,11 +30,37 @@ public class TransactionTests
     [Fact]
     public void UnbalancedEntries_Throws()
     {
-        var entries = new[]
-        {
-            new Entry(Guid.NewGuid(), new Money(-1000, "GBP")),
-            new Entry(Guid.NewGuid(), new Money(900, "GBP")),
-        };
+        Entry[] entries =
+        [
+            new(Guid.NewGuid(), new Money(-1000, "GBP")),
+            new(Guid.NewGuid(), new Money(900, "GBP")),
+        ];
+
+        Assert.Throws<ArgumentException>(
+            () => new Transaction(Guid.NewGuid(), DateTimeOffset.UtcNow, entries));
+    }
+
+    [Fact]
+    public void MixedCurrencies_Throws()
+    {
+        Entry[] entries =
+        [
+            new(Guid.NewGuid(), new Money(-500, "GBP")),
+            new(Guid.NewGuid(), new Money(500, "USD")),
+        ];
+
+        Assert.Throws<ArgumentException>(
+            () => new Transaction(Guid.NewGuid(), DateTimeOffset.UtcNow, entries));
+    }
+
+    [Fact]
+    public void DefaultMoney_Throws()
+    {
+        Entry[] entries =
+        [
+            new(Guid.NewGuid(), default),
+            new(Guid.NewGuid(), default),
+        ];
 
         Assert.Throws<ArgumentException>(
             () => new Transaction(Guid.NewGuid(), DateTimeOffset.UtcNow, entries));

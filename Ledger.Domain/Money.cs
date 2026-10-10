@@ -1,6 +1,6 @@
 namespace Ledger.Domain;
 
-public sealed record Money
+public readonly record struct Money
 {
     public long MinorUnits { get; }
     public string Currency { get; }
